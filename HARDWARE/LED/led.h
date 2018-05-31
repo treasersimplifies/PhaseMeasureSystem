@@ -14,6 +14,9 @@ void Led_Set(int A,int B,int C,int D,int E,int F,int G,int DP);
 void SingleTube_Set(int num);
 void DigitalTube_Set(int num);		//数码管显示函数
 void Tube_delay(int time,int num);	//数码管延时函数
+void Tube_scan_all(void);
+void Tube_set_all(void);
+void Tube_demo(void);
 #endif
 
 

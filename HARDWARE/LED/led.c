@@ -1,5 +1,6 @@
 #include "led.h" 
 #include "delay.h"
+#include "usart.h"
 //初始化PF9和PF10为输出口.并使能这两个口的时钟		    
 //LED IO初始化
 void LED_Init(void)
@@ -27,9 +28,7 @@ void DigitalTube_Init(void)
 	RCC->AHB1ENR|=1<<5; //使能PORTF时钟 
 	RCC->AHB1ENR|=1<<4; //使能PORTE时钟
 	GPIO_Set(GPIOF,PIN7|PIN8|PIN9|PIN10|PIN11|PIN12|PIN13|PIN14,GPIO_MODE_OUT,GPIO_OTYPE_PP,GPIO_SPEED_100M,GPIO_PUPD_PU); //PF7-PF14设置
-	GPIO_Set(GPIOE,PIN13|PIN14|PIN15,GPIO_MODE_OUT,GPIO_OTYPE_PP,GPIO_SPEED_100M,GPIO_PUPD_PU); //PE13 -PE15
-	PFout(10)=1;
-	
+	GPIO_Set(GPIOE,PIN13|PIN14|PIN15,GPIO_MODE_OUT,GPIO_OTYPE_PP,GPIO_SPEED_100M,GPIO_PUPD_PU); //PE13 -PE15	
 }
 
 void Led_Set(int A,int B,int C,int D,int E,int F,int G,int DP){
@@ -71,9 +70,9 @@ void SingleTube_Set(int num){
 	switch (num){
 		case 0:Led_Set(1,1,1,1,1,1,0,0);break;
 		case 1:Led_Set(0,1,1,0,0,0,0,0);break;
-		case 2:Led_Set(1,1,0,1,1,0,1,0);break;
-		case 3:Led_Set(1,1,1,1,0,0,0,0);break;
-		case 4:Led_Set(0,1,1,0,0,1,1,0);break;
+		case 2:Led_Set(1,1,0,1,1,0,1,0);break;//ABDEG，实际：A*
+		case 3:Led_Set(1,1,1,1,0,0,1,0);break;//ABCDG
+		case 4:Led_Set(0,1,1,0,0,1,1,0);break;//BCFG
 		case 5:Led_Set(1,0,1,1,0,1,1,0);break;//AFGCD
 		case 6:Led_Set(1,0,1,1,1,1,1,0);break;//AFGCDE
 		case 7:Led_Set(1,1,1,0,0,0,0,0);break;//ABC
@@ -112,3 +111,68 @@ void Tube_delay(int time,int num){
 	}
 }
 
+void Tube_scan_all(void){
+	PEout(13)=1;
+	PEout(14)=0;
+	PEout(15)=0;
+	Led_Set(1,0,0,0,0,0,0,0);
+	delay_ms(1000);
+	Led_Set(1,1,0,0,0,0,0,0);
+	delay_ms(1000);
+	Led_Set(1,1,1,0,0,0,0,0);
+	delay_ms(1000);
+	Led_Set(1,1,1,1,0,0,0,0);
+	delay_ms(1000);
+	Led_Set(1,1,1,1,1,0,0,0);
+	delay_ms(1000);
+	Led_Set(1,1,1,1,1,1,0,0);
+	delay_ms(1000);
+	Led_Set(1,1,1,1,1,1,1,0);
+	delay_ms(1000);
+	Led_Set(1,1,1,1,1,1,1,1);
+	delay_ms(1000);
+}
+void Tube_set_all(void){
+	
+	PEout(13)=1;
+	PEout(14)=0;
+	PEout(15)=0;
+	
+	PFout(14)=1;PFout(13)=1;PFout(12)=1;PFout(11)=1;PFout(10)=1;PFout(9)=1;PFout(8)=1;PFout(7)=1;
+	printf("\n");
+	delay_ms(2000);
+	PFout(14)=0;PFout(13)=1;PFout(12)=1;PFout(11)=1;PFout(10)=1;PFout(9)=1;PFout(8)=1;PFout(7)=1;
+	printf("A\n");
+	delay_ms(2000);
+	PFout(14)=0;PFout(13)=0;PFout(12)=1;PFout(11)=1;PFout(10)=1;PFout(9)=1;PFout(8)=1;PFout(7)=1;
+	printf("AB\n");
+	delay_ms(2000);
+	PFout(14)=0;PFout(13)=0;PFout(12)=0;PFout(11)=1;PFout(10)=1;PFout(9)=1;PFout(8)=1;PFout(7)=1;
+	printf("ABC\n");
+	delay_ms(2000);
+	PFout(14)=0;PFout(13)=0;PFout(12)=0;PFout(11)=0;PFout(10)=1;PFout(9)=1;PFout(8)=1;PFout(7)=1;
+	printf("ABCD\n");
+	delay_ms(2000);
+	PFout(14)=0;PFout(13)=0;PFout(12)=0;PFout(11)=0;PFout(10)=0;PFout(9)=1;PFout(8)=1;PFout(7)=1;
+	printf("ABCDE\n");
+	delay_ms(2000);
+	PFout(14)=0;PFout(13)=0;PFout(12)=0;PFout(11)=0;PFout(10)=0;PFout(9)=0;PFout(8)=1;PFout(7)=1;
+	printf("ABCDEF\n");
+	delay_ms(2000);
+	PFout(14)=0;PFout(13)=0;PFout(12)=0;PFout(11)=0;PFout(10)=0;PFout(9)=0;PFout(8)=0;PFout(7)=1;
+	printf("ABCDEFG\n");
+	delay_ms(2000);
+	
+}
+
+void Tube_demo(void){
+	Tube_delay(1000,012);//01*0*
+	Tube_delay(1000,123);//1*4*5
+	Tube_delay(1000,234);//61*8
+	Tube_delay(1000,456);//9*10
+	Tube_delay(1000,567);
+	Tube_delay(1000,678);
+	Tube_delay(1000,789);
+	Tube_delay(1000,890);
+	Tube_delay(1000,910);
+}
