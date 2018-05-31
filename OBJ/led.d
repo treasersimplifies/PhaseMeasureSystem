@@ -9,3 +9,5 @@
 ..\obj\led.o: ..\SYSTEM\sys\core_cm4_simd.h
 ..\obj\led.o: ..\SYSTEM\sys\system_stm32f4xx.h
 ..\obj\led.o: ..\SYSTEM\delay\delay.h
+..\obj\led.o: ..\SYSTEM\usart\usart.h
+..\obj\led.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
