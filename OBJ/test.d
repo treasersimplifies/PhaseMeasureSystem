@@ -10,6 +10,7 @@
 ..\obj\test.o: ..\SYSTEM\delay\delay.h
 ..\obj\test.o: ..\SYSTEM\usart\usart.h
 ..\obj\test.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\test.o: ..\HARDWARE\TIMER\timer.h
 ..\obj\test.o: ..\HARDWARE\LED\led.h
 ..\obj\test.o: ..\HARDWARE\BEEP\beep.h
 ..\obj\test.o: ..\HARDWARE\KEY\key.h

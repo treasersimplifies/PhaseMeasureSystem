@@ -10,3 +10,5 @@
 ..\obj\beep.o: ..\SYSTEM\sys\system_stm32f4xx.h
 ..\obj\beep.o: ..\SYSTEM\delay\delay.h
 ..\obj\beep.o: ..\HARDWARE\LED\led.h
+..\obj\beep.o: ..\SYSTEM\usart\usart.h
+..\obj\beep.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
