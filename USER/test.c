@@ -1,7 +1,7 @@
 #include "sys.h"
 #include "delay.h" 
 #include "usart.h"
-
+#include "timer.h"
 #include "led.h"
 #include "beep.h"
 #include "key.h"
@@ -24,11 +24,11 @@
 //指示Led：		PE7/PE8(未使用)
 int main(void)
 { 
-	int i = 0;
+	int i =0;
 	int j =0;
-	int BEEP_EN = 0;
+	int Beep_En = 0;
 	int Fre_or_Phase = 0;
-	int phase_diff=140;
+	int phase_diff=0;
 	int frequency = 0;
 	Stm32_Clock_Init(336,8,2,7); //设置时钟,168Mhz
 	delay_init(168);		//初始化延时函数
@@ -41,18 +41,20 @@ int main(void)
 	while(1)//进入程序主循环，主循环T=0.6s, f=1.67Hz,满足秒更新1-2次的要求
 	{	
 		//主循环不能有delay，否则会影响数码管显示。故把delay替换成了Tube_delay
-
-		if(0 == KEY_BEEP){BEEP_EN=!BEEP_EN;} 			//当按键按下(持续0.6s-1.2s)，支持蜂鸣器报警功能，再按一次则禁止。
-		if(0 == KEY_FP){Fre_or_Phase=!Fre_or_Phase;}
 		
-		printf("BEEP_EN = %d\n",BEEP_EN);
-		printf("Fre_or_Phase = %d\n",Fre_or_Phase);
-		i=KEY_BEEP;
-		j=KEY_FP;
-		printf("KEY_BEEP = %d\n",i);
-		printf("KEY_FP = %d\n",j);
-		//printf("Phase Difference = %d\n",phase_diff);
-		//printf("Frequency = %d\n",frequency);
+		if(0 == KEY_BEEP){Beep_En = 1;}
+		else{Beep_En = 0;}
+		if(0 == KEY_FP){Fre_or_Phase = 1;}
+		else{Fre_or_Phase = 0;}
+		
+		printf("Bepp_En = %d",Beep_En);
+		Tube_delay(16,phase_diff);		//应该在每一句需要花费STM32芯片时间的语句后面加一个Tube_delay，防止闪烁，最小单位：15，保险起见16。
+		printf("   Fre_or_Phase = %d",Fre_or_Phase);
+		Tube_delay(16,phase_diff);
+		printf("   Phase Difference = %d",phase_diff);
+		Tube_delay(16,phase_diff);
+		printf("   Frequency = %d",frequency);
+		Tube_delay(16,phase_diff);
 		
 		if(Fre_or_Phase==0){//选择显示相位测量
 			//DigitalTube_Set(012);//
@@ -60,7 +62,8 @@ int main(void)
 			//Tube_demo();
 			//Tube_delay(1000,phase_diff);
 			//如果开关允许报警，此处蜂鸣器警报花费0.6s.
-			if(BEEP_EN==1){		//当Fre_or_Phase=0，BEEP_EN=1时，才会有蜂鸣器报警
+			
+			if(Beep_En==1){		//当Fre_or_Phase=0，BEEP_EN=1时，才会有蜂鸣器报警
 				if(phase_diff<5){
 				Beep_Low(phase_diff);
 				}
@@ -68,10 +71,12 @@ int main(void)
 				Beep_High(phase_diff);
 				}
 			}
-			else{;}
+			else{
+				Tube_delay(900,phase_diff);//delay时间尽量能被15整除？
+			}
 		}
-		else{
-			Tube_delay(1000,frequency+100);
+		else{//Fre_or_Phase==1 选择显示频率测量
+			Tube_delay(1000,frequency+500);
 		}
 		
 	}	
