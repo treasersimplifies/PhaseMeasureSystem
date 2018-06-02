@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\HARDWARE\LED;..\HARDWARE\BEEP;..\HARDWARE\KEY</IncludePath>
+              <IncludePath>..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\HARDWARE\LED;..\HARDWARE\BEEP;..\HARDWARE\KEY;..\HARDWARE\EXTI;..\HARDWARE\TIMER</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -462,6 +462,11 @@
               <FileName>key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\KEY\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\TIMER\timer.c</FilePath>
             </File>
           </Files>
         </Group>
