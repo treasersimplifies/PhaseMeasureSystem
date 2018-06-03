@@ -19,22 +19,22 @@ void Beep_Low(int num)	//相位小于5度，低频报警,整个函数需要 0.4s 的时间
 	printf("Beep low frequency blink!");
 	BEEP=0;		  
 	//delay_ms(400); 
-	Tube_delay(500,num);
+	Tube_delay(400,num);
 	BEEP=1;  
 	//delay_ms(400);
-	Tube_delay(500,num);
+	Tube_delay(400,num);
 }
 
 void Beep_High(int num)	//相位大于135度，高频,4倍，报警,整个函数需要 0.6s 的时间
 {	
 	printf("Beep high frequency blink!");
 	BEEP=0;  
-	Tube_delay(250,num);
+	Tube_delay(200,num);
 	BEEP=1;		  
-	Tube_delay(250,num);
+	Tube_delay(200,num);
 	BEEP=0;  
-	Tube_delay(250,num);
+	Tube_delay(200,num);
 	BEEP=1;		  
-	Tube_delay(250,num);  
+	Tube_delay(200,num);  
 }
 

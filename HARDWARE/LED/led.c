@@ -62,7 +62,7 @@ void Led_Set(int A,int B,int C,int D,int E,int F,int G,int DP){
 
 void SingleTube_Set(int num){
 
-	if(num>=10){
+	if(num>=10||num<0){
 		//ÏÔÊ¾¡°E¡±£¬´íÎó
 		Led_Set(1,0,0,1,1,1,1,0);//ADEFG
 		return;
