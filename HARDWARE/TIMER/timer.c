@@ -72,7 +72,7 @@ void Phase_Measure_Init(u32 arr,u16 psc){
 //u32	PHASE_DIFFF_CAPTURE_VAL=0;
 u8  TIM5CH1_CAPTURE_STA=0;	//输入捕获状态		    				
 u32	TIM5CH1_CAPTURE_VAL;	//输入捕获值(TIM2/TIM5是32位)
-u32	TIM2TIM5_DIFF_VAL;
+u32	TIM2TIM5_DIFF_VAL=0;
 //u32 TIM5_TOTAL_VAL[10];
 //u32 TIM2_TOTAL_VAL[10];
 
@@ -99,6 +99,7 @@ void TIM5_IRQHandler(void)
 			if(TIM5CH1_CAPTURE_STA&0X40)		//已经捕获到一个上升沿，这次又捕获到了下降沿	
 			{	  			
 			    TIM5CH1_CAPTURE_VAL=TIM5->CCR1;	//获取当前的捕获值，执行此条指令需要一定的时间，1us？
+				//printf("T5V=%d\r\n",TIM5CH1_CAPTURE_VAL);
 												//所以上次读取高电平的指令和本指令之间的差最好就是隔
 				TIM5CH1_CAPTURE_STA|=0X80;		//标记成功捕获到一次高电平脉宽
 				//printf("完成一次捕获\r\n");
@@ -158,9 +159,9 @@ void TIM2_IRQHandler(void)
 			}
 			else  								//还未开始,第一次捕获上升沿
 			{
+				TIM2TIM5_DIFF_VAL=TIM5->CNT;//TIM5->CCR1
 				TIM2->CNT=0;					//计数器清空
-				TIM2TIM5_DIFF_VAL=TIM5->CCR1;
-				//printf("PD = %d",TIM2TIM5_DIFF_VAL);
+				//printf("PD = %d\r\n",TIM2TIM5_DIFF_VAL);
 				TIM2CH1_CAPTURE_STA=0;			//清空
 				TIM2CH1_CAPTURE_VAL=0;			
 				TIM2CH1_CAPTURE_STA|=0X40;		//标记捕获到了上升沿

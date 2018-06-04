@@ -87,21 +87,21 @@ void DigitalTube_Set(int num){//只支持整数，不支持显示小数！！！
 	int high = num/100;
 	
 	//对三位数码管进行扫描显示，扫描一次需要15ms。
-	PEout(13)=1;
-	PEout(14)=0;
-	PEout(15)=0;
-	SingleTube_Set(low);
-	delay_ms(5);
-	PEout(13)=0;
-	PEout(14)=1;
-	PEout(15)=0;
-	SingleTube_Set(mid);
-	delay_ms(5);
-	PEout(13)=0;
-	PEout(14)=0;
-	PEout(15)=1;
-	SingleTube_Set(high);
-	delay_ms(5);
+		PEout(13)=1;
+		PEout(14)=0;
+		PEout(15)=0;
+		SingleTube_Set(low);
+		delay_ms(5);
+		PEout(13)=0;
+		PEout(14)=1;
+		PEout(15)=0;
+		SingleTube_Set(mid);
+		delay_ms(5);
+		PEout(13)=0;
+		PEout(14)=0;
+		PEout(15)=1;
+		SingleTube_Set(high);
+		delay_ms(5);
 }
 
 void Tube_delay(int time,int num){
@@ -109,6 +109,17 @@ void Tube_delay(int time,int num){
 	for(;time>0;time--){
 		DigitalTube_Set(num);
 	}
+}
+
+void Tube_clear(int num){
+	if(num<5||num>135){
+		PEout(13)=0;
+		PEout(14)=0;
+		PEout(15)=0;
+		delay_ms(400);
+	}
+	else
+		Tube_delay(400,num);
 }
 
 void Tube_scan_all(void){
