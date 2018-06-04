@@ -8,7 +8,7 @@
 //引脚使用分配：
 //输入捕获：
 //PA0（TIM5_CH1）	先出现上升沿
-//PA5（TIM2_CH!）	后出现上升沿
+//PA5（TIM2_CH1）	后出现上升沿
 //蜂鸣器: 		PF6
 //按键： 		PE4、PE3(PE2未使用)
 //三位数码管:与SM310361D3B的对应关系：
@@ -57,18 +57,17 @@ int main(void)
 	while(1)	//进入程序主循环，主循环周期大约为0.88s, f=1.14Hz, 满足秒更新1-2次的要求
 	{			//主循环不能有delay，否则会影响数码管动态显示。故把delay替换成了Tube_delay
 		
-		Tube_delay(16,666);
+		Tube_delay(16,Fre_or_Phase==0?phase_diff:(frequency-900));
 		///////////////////////////////////按钮选择部分/////////////////////////////
 		if(0 == KEY_BEEP){Beep_En = 1;}
 		else{Beep_En = 0;}
 		if(0 == KEY_FP){Fre_or_Phase = 1;}
 		else{Fre_or_Phase = 0;}
 		
-		
 		printf("Bepp_En = %d",Beep_En);
-		Tube_delay(16,phase_diff);		//应该在每一句需要花费STM32芯片时间的语句后面加一个Tube_delay，防止闪烁，最小单位：15，保险起见16。
+		Tube_delay(16,Fre_or_Phase==0?phase_diff:(frequency-900));		//应该在每一句需要花费STM32芯片时间的语句后面加一个Tube_delay，防止闪烁，最小单位：15，保险起见16。
 		printf("   Fre_or_Phase = %d\r\n",Fre_or_Phase);
-		Tube_delay(16,phase_diff);
+		Tube_delay(16,Fre_or_Phase==0?phase_diff:(frequency-900));
 		
 		//////进入测量部分前，应该完成了：TIM5、TIM2各一次高电平捕获，当然也完成了差值捕获
 		///////////////////////////////////输入测量部分/////////////////////////////
@@ -80,10 +79,16 @@ int main(void)
 			T*=2;
 			DIFF = TIM2TIM5_DIFF_VAL;
 			printf("T of the signal:%lld us\r",T);
-			frequency = 1000000/T;
-			phase_diff = DIFF*360/T;
-			printf("==Frequency of the signal:%lld Hz\r",frequency);
-			printf("==Phase Difference = %lld\r\n",phase_diff);
+			Tube_delay(16,Fre_or_Phase==0?phase_diff:(frequency-900));
+			//软件滤波使得无法测量频率高于1200、频率低于900、相位大于150的情况！！！
+			if((1000000/T<=1200)&&(1000000/T>=900))//软件滤波
+				frequency = 1000000/T;
+			if(DIFF*360/T<=150)//软件滤波
+				phase_diff = DIFF*360/T;
+			printf("///Frequency of the signal:%lld Hz\r",frequency);
+			Tube_delay(16,Fre_or_Phase==0?phase_diff:(frequency-900));
+			printf("///Phase Difference = %lld\r\n",phase_diff);
+			Tube_delay(16,Fre_or_Phase==0?phase_diff:(frequency-900));
 			///////////////////////////////////输出显示部分/////////////////////////////
 			//printf("   Phase Difference = %d",phase_diff);
 			//Tube_delay(16,phase_diff);
@@ -100,8 +105,9 @@ int main(void)
 					}
 				}
 				else{
-					Tube_delay(800,phase_diff);//delay时间尽量能被15整除？
+					Tube_delay(400,phase_diff);//delay时间尽量能被15整除？
 				}
+				Tube_clear(phase_diff);//此函数需要400ms
 			}
 			else{//Fre_or_Phase==1 选择显示频率测量
 				Tube_delay(800,frequency-900);//显示频率和900的差值
