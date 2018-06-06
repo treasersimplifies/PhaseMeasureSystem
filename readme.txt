@@ -23,3 +23,7 @@ Fix a bug about TIMER counting and implement function: phase measure.
 Actually, after 2 days debuging I just rewrite a single following line of code, 
 TIM2TIM5_DIFF_VAL=TIM5->CNT; //TIM5->CCR1
 and the whole project which contains thousands of lines of codes suddlenly becomes full of color.
+
+Version 2.1
+Compensate the phase and frequency measure.
+Electronic Designer Curriculum Finished.
