@@ -81,10 +81,10 @@ int main(void)
 			printf("T of the signal:%lld us\r",T);
 			Tube_delay(16,Fre_or_Phase==0?phase_diff:(frequency-900));
 			//软件滤波使得无法测量频率高于1200、频率低于900、相位大于150的情况！！！
-			if((1000000/T<=1200)&&(1000000/T>=900))//软件滤波
-				frequency = 1000000/T;
+			if((1000000/T<=1220)&&(1000000/T>=890))//软件滤波
+				frequency = 1000000/T-2;//-2是为了矫正
 			if(DIFF*360/T<=150)//软件滤波
-				phase_diff = DIFF*360/T;
+				phase_diff = DIFF*360/T-1;//-1是为了进行矫正
 			printf("///Frequency of the signal:%lld Hz\r",frequency);
 			Tube_delay(16,Fre_or_Phase==0?phase_diff:(frequency-900));
 			printf("///Phase Difference = %lld\r\n",phase_diff);
